@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Calificaciones</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .card {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: none;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            text-align: center;
+            padding: 1.5rem;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .btn-calculate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        .btn-calculate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+        .btn-clear {
+            background: #6c757d;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        .btn-clear:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+            color: white;
+        }
+        .result-container {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border: 2px dashed #dee2e6;
+        }
+        .result-score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .result-message {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .score-reprobado { color: #dc3545; }
+        .score-bueno { color: #ffc107; }
+        .score-muy-bueno { color: #17a2b8; }
+        .score-sobresaliente { color: #28a745; }
+        .input-group-text {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px 0 0 10px;
+            font-weight: 600;
+        }
+        .form-control.with-icon {
+            border-radius: 0 10px 10px 0;
+        }
+        .footer-info {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-top: 2rem;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="mb-0">
+                            <i class="fas fa-calculator me-2"></i>
+                            Calculadora de Calificaciones Finales
+                        </h2>
+                        <p class="mb-0 mt-2 opacity-75">Ingresa las tres notas parciales para calcular tu calificación final</p>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="gradeForm">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="parcial1" class="form-label">
+                                        <i class="fas fa-edit me-2 text-primary"></i>
+                                        1.er Parcial
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Max 30</span>
+                                        <input type="number" class="form-control with-icon" id="parcial1" 
+                                               placeholder="0 - 30" step="0.01" min="0" max="30">
+                                    </div>
+                                    <small class="text-muted">Máximo 30 puntos</small>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="parcial2" class="form-label">
+                                        <i class="fas fa-edit me-2 text-info"></i>
+                                        2.º Parcial
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Max 30</span>
+                                        <input type="number" class="form-control with-icon" id="parcial2" 
+                                               placeholder="0 - 30" step="0.01" min="0" max="30">
+                                    </div>
+                                    <small class="text-muted">Máximo 30 puntos</small>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="parcial3" class="form-label">
+                                        <i class="fas fa-edit me-2 text-success"></i>
+                                        3.er Parcial
+                                    </label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">Max 40</span>
+                                        <input type="number" class="form-control with-icon" id="parcial3" 
+                                               placeholder="0 - 40" step="0.01" min="0" max="40">
+                                    </div>
+                                    <small class="text-muted">Máximo 40 puntos</small>
+                                </div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-calculate w-100" id="calculateBtn">
+                                        <i class="fas fa-calculator me-2"></i>
+                                        Calcular Calificación
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-clear w-100" id="clearBtn">
+                                        <i class="fas fa-eraser me-2"></i>
+                                        Limpiar Formulario
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="result-container" id="resultContainer" style="display: none;">
+                            <div class="result-score" id="finalScore">--</div>
+                            <div class="result-message" id="resultMessage">Ingresa las notas para ver el resultado</div>
+                            <small class="text-muted mt-2">Calificación sobre 100 puntos</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-info">
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <strong>0-59</strong><br>
+                            <small>Reprobado</small>
+                        </div>
+                        <div class="col-3">
+                            <strong>60-79</strong><br>
+                            <small>Bueno</small>
+                        </div>
+                        <div class="col-3">
+                            <strong>80-89</strong><br>
+                            <small>Muy Bueno</small>
+                        </div>
+                        <div class="col-3">
+                            <strong>90-100</strong><br>
+                            <small>Sobresaliente</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.js"></script>
+    <!-- JavaScript personalizado -->
+    <script src="script.js"></script>
+</body>
+</html>
